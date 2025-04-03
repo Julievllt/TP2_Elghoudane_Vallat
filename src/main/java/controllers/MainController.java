@@ -52,12 +52,41 @@ public class MainController extends ControllerBase {
 	private void onConnectButtonClick() {
 		int port = -1;
 		// TODO Tâche 5 : Implémenter le changement de la vue lors d'une connexion et gèrer la validation du numéro de port 
-		// Votre code doit utiliser la ligne ci-dessous:
-		//						super.setUpSocket(port);
-		//						App.showView("Tamagotchi");
+		// Récupérer le texte du champ de port
+		String portText = mainView.getPortField().getText().trim();
 
+		try {
+			// Si le champ est vide, utiliser le port par défaut
+			if (portText.isEmpty()) {
+				port = Constants.DEFAULT_PORT;
+			} else {
+				// Sinon, essayer de convertir la valeur en entier
+				port = Integer.parseInt(portText);
 
+				// Vérifier que le port est dans une plage valide
+				if (port < 1024 || port > 65535) {
+					showError("Le port doit être entre 1024 et 65535");
+					return;
+				}
+			}
+
+			// Établir la connexion socket
+			super.setUpSocket(port);
+
+			// Changer de vue
+			App.showView("Tamagotchi");
+
+		} catch (NumberFormatException e) {
+			// Erreur si le port n'est pas un nombre valide
+			showError("Le port doit être un nombre entier valide");
+		} catch (IOException e) {
+			// Erreur si la connexion échoue
+			showError("Impossible de se connecter au serveur : " + e.getMessage());
+		}
 	}
+
+
+}
 
 
 	/**

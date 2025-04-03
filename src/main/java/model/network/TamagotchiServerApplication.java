@@ -1,12 +1,6 @@
 package model.network;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 import model.Tamagotchi;
 import model.action.TamagotchiAction;
@@ -153,6 +147,10 @@ public class TamagotchiServerApplication {
 				break;
 
 				// TODO Tâche 8 : Afficher le message d'aide dans le cas de la commande "-h".
+				case "-h":
+					printHelp();
+					System.exit(0);
+					break;
 
 			default:
 				System.out.println("Argument inconnu: " + args[i]);
@@ -190,7 +188,27 @@ public class TamagotchiServerApplication {
 	 */
 	private static void deserializeTamagotchiFromFile(String filePath) {
 		// TODO Tâche 1: La désérialisation du Tamagotchi depuis le fichier.
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filePath))) {
+			Object obj = ois.readObject();
+			if (obj instanceof Tamagotchi) {
+				tamagotchi = (Tamagotchi) obj;
+				System.out.println("Tamagotchi désérialisé avec succès depuis " + filePath);
+			} else {
+				System.out.println("Le fichier ne contient pas un objet Tamagotchi valide.");
+				System.exit(1);
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("Fichier non trouvé: " + filePath);
+			System.exit(1);
+		} catch (IOException e) {
+			System.out.println("Erreur lors de la lecture du fichier: " + e.getMessage());
+			System.exit(1);
+		} catch (ClassNotFoundException e) {
+			System.out.println("Classe Tamagotchi non trouvée lors de la désérialisation: " + e.getMessage());
+			System.exit(1);
+		}
 	}
+
 
 	/**
 	 * Analyse les valeurs initiales du Tamagotchi à partir d'un fichier texte.
@@ -248,6 +266,18 @@ public class TamagotchiServerApplication {
 	private static void updateTamagotchiEmotion(EmotionType emotion, int value) {
 		switch (emotion) {
 		// TODO Tâche 2: Met à jour l'émotion du Tamagotchi avec la valeur spécifiée.
+			case JOY:
+				tamagotchi.increaseEmotionValue(EmotionType.JOY, value);
+				break;
+			case SADNESS:
+				tamagotchi.increaseEmotionValue(EmotionType.SADNESS, value);
+				break;
+			case ANGER:
+				tamagotchi.increaseEmotionValue(EmotionType.ANGER, value);
+				break;
+			case FEAR:
+				tamagotchi.increaseEmotionValue(EmotionType.FEAR, value);
+				break;
 
 		default:
 			System.out.println("Commande d'émotion inconnue: " + emotion);
@@ -265,6 +295,14 @@ public class TamagotchiServerApplication {
 				System.out.println("Arrêt du serveur... Sérialisation de Tamagotchi dans le fichier :" + outputFile);
 
 				// TODO Tâche 3: Sérialiser l'objet Tamagotchi à l'arrêt du serveur.
+				try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFile))) {
+					oos.writeObject(tamagotchi);
+					System.out.println("Tamagotchi sérialisé avec succès dans " + outputFile);
+				} catch (FileNotFoundException e) {
+					System.out.println("Impossible de créer le fichier de sortie: " + e.getMessage());
+				} catch (IOException e) {
+					System.out.println("Erreur lors de la sérialisation du Tamagotchi: " + e.getMessage());
+				}
 
 			}));
 		}

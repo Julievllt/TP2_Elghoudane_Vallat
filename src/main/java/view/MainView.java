@@ -1,6 +1,7 @@
 package view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -103,7 +104,25 @@ public class MainView extends ViewBase {
 
 		//TODO Tâche 4 : Créer l'interface utilisateur de la première vue.
 		// Votre code doit utiliser la ligne ci-dessous:
+		// Création d'un label pour indiquer à l'utilisateur de saisir un numéro de port
+		Label portLabel = new Label("Entrez le numéro de port:");
+
+		// Création du champ de texte pour saisir le port
+		portField = new TextField();
+		portField.setPromptText("Port (défaut: " + Constants.DEFAULT_PORT + ")");
+		portField.setPrefWidth(200);
+
+		// Création du bouton de connexion
 		connectButton = new Button(Constants.BUTTON_CONNECT);
+
+		// Création du label d'erreur (invisible par défaut)
+		errorLabel = new Label();
+		errorLabel.setTextFill(javafx.scene.paint.Color.RED);
+		errorLabel.setVisible(false);
+
+		// Ajout des éléments à la racine
+		root.getChildren().addAll(portLabel, portField, connectButton, errorLabel);
+		root.setAlignment(Pos.CENTER);
 
 	}
 }

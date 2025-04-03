@@ -49,6 +49,13 @@ public class TamagotchiController extends ControllerBase {
 		this.tamagotchiView = (TamagotchiView) super.view;
 
 		//TODO Tâche 6 : Définir le comportement au clic pour chaque bouton dans la vue Tamagotchi.
+		// Définir le comportement au clic pour chaque bouton
+		tamagotchiView.getPlayButton().setOnAction(event -> play());
+		tamagotchiView.getFeedButton().setOnAction(event -> feed());
+		tamagotchiView.getPunishButton().setOnAction(event -> punish());
+		tamagotchiView.getIgnoreButton().setOnAction(event -> ignore());
+		tamagotchiView.getJudgeButton().setOnAction(event -> judge());
+		tamagotchiView.getExitButton().setOnAction(event -> exit());
 
 		super.addEventHandler((Event event) -> {
 			handleServerEvent(event);
@@ -129,6 +136,13 @@ public class TamagotchiController extends ControllerBase {
 	 */
 	private void feed() {
 		//TODO Tâche 0 : Gérer le changement d'état du Tamagotchi lors du clic sur le bouton de nourrissage via le serveur.
+		try {
+			sendBehaviorToServer(new Feed());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	}
 
